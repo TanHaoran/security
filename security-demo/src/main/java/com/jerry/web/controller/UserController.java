@@ -3,6 +3,7 @@ package com.jerry.web.controller;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.jerry.dto.User;
 import com.jerry.dto.UserQueryCondition;
+import com.jerry.exception.UserNotExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -158,5 +159,16 @@ public class UserController {
     @DeleteMapping("/{id:\\d+}")
     public void delete(@PathVariable String id) {
         log.info("id={}", id);
+    }
+
+    /**
+     * 抛出异常的请求
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/error/{id:\\d+}")
+    public User error(@PathVariable("id") String id) {
+        throw new UserNotExistException(id);
     }
 }
