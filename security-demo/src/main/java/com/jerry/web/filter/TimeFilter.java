@@ -1,5 +1,7 @@
 package com.jerry.web.filter;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.servlet.*;
 import java.io.IOException;
 import java.util.Date;
@@ -13,26 +15,27 @@ import java.util.Date;
  */
 // 使用Component注解，可以直接将过滤器添加到组件中进行过滤，如果使用第三方的过滤器没有Component注解的话，那么需要做配置文件
 // @Component
+@Slf4j
 public class TimeFilter implements Filter {
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
-        System.out.println("【过滤器】初始化");
+        log.info("【过滤器】初始化");
     }
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
             throws IOException, ServletException {
-        System.out.println("【过滤器】开始");
+        log.info("【过滤器】开始");
         long start = new Date().getTime();
         chain.doFilter(request, response);
-        System.out.println("【过滤器】耗时: " + (new Date().getTime() - start));
-        System.out.println("【过滤器】结束");
+        log.info("【过滤器】耗时: " + (new Date().getTime() - start));
+        log.info("【过滤器】结束");
     }
 
     @Override
     public void destroy() {
-        System.out.println("【过滤器】销毁");
+        log.info("【过滤器】销毁");
     }
 
 }
