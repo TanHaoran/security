@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.RestController;
  * User: Jerry
  * Date: 2018/4/23
  * Time: 10:41
- * Description:
+ * Description:User
+ * UserQueryCondition
  */
 @SpringBootApplication
 @RestController

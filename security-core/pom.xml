@@ -69,6 +69,12 @@
             <artifactId>commons-collections</artifactId>
         </dependency>
 
+        <!--实体类构建工具-->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>
