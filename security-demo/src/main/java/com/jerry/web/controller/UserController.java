@@ -1,14 +1,12 @@
 package com.jerry.web.controller;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import com.jerry.dto.User;
 import com.jerry.dto.UserQueryCondition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +20,7 @@ import java.util.List;
  */
 @RestController
 @Slf4j
+@RequestMapping("/user")
 public class UserController {
 
     /**
@@ -29,7 +28,8 @@ public class UserController {
      *
      * @return
      */
-    @RequestMapping(value = "/user/query", method = RequestMethod.GET)
+    @GetMapping("/query")
+    @JsonView(User.UserSimpleView.class)
     public List<User> query() {
         List<User> users = new ArrayList<>();
         users.add(new User());
@@ -44,7 +44,8 @@ public class UserController {
      * @param username
      * @return
      */
-    @RequestMapping(value = "/user/queryParam", method = RequestMethod.GET)
+    @GetMapping("/queryParam")
+    @JsonView(User.UserSimpleView.class)
     public User queryParam(@RequestParam(required = false, defaultValue = "guest", name = "username")
                                    String username) {
         log.info("用户名:{}", username);
@@ -59,7 +60,7 @@ public class UserController {
      * @param condition
      * @return
      */
-    @RequestMapping(value = "/user/queryCondition", method = RequestMethod.GET)
+    @GetMapping("/queryCondition")
     public UserQueryCondition queryCondition(UserQueryCondition condition) {
         log.info("条件:{}", condition.toString());
         return condition;
@@ -72,7 +73,8 @@ public class UserController {
      * @param pageable
      * @return
      */
-    @RequestMapping(value = "/user/queryPage", method = RequestMethod.GET)
+    @GetMapping("/queryPage")
+    @JsonView(User.UserSimpleView.class)
     public List<User> queryPage(UserQueryCondition condition,
                                 @PageableDefault(page = 1, size = 10, sort = "ageFrom") Pageable pageable) {
         log.info("每页条数:{}", pageable.getPageSize());
@@ -83,5 +85,19 @@ public class UserController {
         users.add(new User());
         users.add(new User());
         return users;
+    }
+
+    /**
+     * 只能传数字的请求
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id:\\d+}")
+    @JsonView(User.UserDetailView.class)
+    public User getInfo(@PathVariable(name = "id") String id) {
+        User user = new User();
+        user.setUsername("Jerry");
+        return user;
     }
 }

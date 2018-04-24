@@ -37,11 +37,12 @@ public class UserControllerTest {
 
     @Test
     public void whenQuerySuccess() throws Exception {
-        mockMvc.perform(get("/user/query")
+        String result = mockMvc.perform(get("/user/query")
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3))
                 .andReturn().getResponse().getContentAsString();
+        log.info("【/user/query】查询结果:" + result);
     }
 
     @Test
@@ -74,5 +75,23 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(3));
+    }
+
+    @Test
+    public void whenGetInfoSuccess() throws Exception {
+        String result = mockMvc.perform(get("/user/1")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.username").value("Jerry"))
+                .andReturn().getResponse().getContentAsString();
+        log.info("【/user/1】查询结果:" + result);
+    }
+
+    @Test
+    public void whenGetInfoFailure() throws Exception {
+        mockMvc.perform(get("/user/a")
+                .contentType(MediaType.APPLICATION_JSON_UTF8))
+                // 期望报4xx的错
+                .andExpect(status().is4xxClientError());
     }
 }
