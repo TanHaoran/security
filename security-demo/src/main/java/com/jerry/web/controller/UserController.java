@@ -6,8 +6,10 @@ import com.jerry.dto.UserQueryCondition;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,6 +100,27 @@ public class UserController {
     public User getInfo(@PathVariable(name = "id") String id) {
         User user = new User();
         user.setUsername("Jerry");
+        return user;
+    }
+
+    /**
+     * 创建用户
+     * @param user
+     * @param errors
+     * @return
+     */
+    @PostMapping
+    // 使用@RequestBody才能正确接收字段对应值
+    // 如果想要捕捉校验错误信息，那么必须加入BindingResult对象
+    public User create(@Valid @RequestBody User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error ->
+                    log.info("【错误信息】" + error.getDefaultMessage()));
+        }
+        log.info("id={}", user.getId());
+        log.info("username={}", user.getUsername());
+        log.info("birthday={}", user.getBirthday());
+        user.setId("1");
         return user;
     }
 }

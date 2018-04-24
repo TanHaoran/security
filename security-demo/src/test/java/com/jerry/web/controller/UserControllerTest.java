@@ -12,7 +12,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.Date;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -93,5 +96,23 @@ public class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON_UTF8))
                 // 期望报4xx的错
                 .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void whenCreateSuccess() throws Exception {
+        Date date = new Date();
+        log.info("时间:" + date.getTime());
+
+        // 推荐在传递日期的时候使用时间戳来传递
+        String content = "{\"username\":\"Jerry\",\"password\":null,\"birthday\":\""
+                + date.getTime() + "\"}";
+
+        String result = mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON_UTF8)
+                .content(content))
+                .andExpect(jsonPath("$.id").value("1"))
+                .andReturn().getResponse().getContentAsString();
+
+        System.out.println(result);
     }
 }
