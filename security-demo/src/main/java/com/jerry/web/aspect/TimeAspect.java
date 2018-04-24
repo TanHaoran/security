@@ -16,13 +16,13 @@ import java.util.Date;
  * Description:
  */
 @Aspect
-@Component
+// @Component
 @Slf4j
 public class TimeAspect {
 
     // 时间：@Around以包围的方式起作用
     // 地点：只针对UserController中的所有方法起作用
-    @Around("execution(* com.jerry.web.controller.UserController.*(..))")
+    @Around("execution(* com.jerry.demo.web.controller.UserController.*(..))")
     public Object handleControllerMethod(ProceedingJoinPoint joinPoint) throws Throwable {
 
         log.info("【切片】start");

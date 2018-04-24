@@ -4,8 +4,8 @@ import com.jerry.web.filter.TimeFilter;
 import com.jerry.web.interceptor.TimeInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.AsyncSupportConfigurer;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -26,7 +26,7 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     private TimeInterceptor timeInterceptor;
 
     // 使用@Bean表明这是一个Spring的Bean
-    @Bean
+    // @Bean
     public FilterRegistrationBean timeFilter() {
         // 将TimeFilter加入过滤器注册Bean中
         FilterRegistrationBean registrationBean = new FilterRegistrationBean();
@@ -43,7 +43,23 @@ public class WebConfig extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(timeInterceptor);
+        // registry.addInterceptor(timeInterceptor);
     }
 
+    /**
+     * 如果想给异步请求配置拦截器的话，需要复写这个方法
+     *
+     * @param configurer
+     */
+    @Override
+    public void configureAsyncSupport(AsyncSupportConfigurer configurer) {
+        super.configureAsyncSupport(configurer);
+        // 使用下面这两个方法配置异步拦截器的
+        // configurer.registerCallableInterceptors();
+        // configurer.registerDeferredResultInterceptors();
+        // 配置超时时间
+        // configurer.setDefaultTimeout(10000);
+        // 设置可重用的线程池来替代Spring默认的线程池
+        // configurer.setTaskExecutor(null);
+    }
 }
