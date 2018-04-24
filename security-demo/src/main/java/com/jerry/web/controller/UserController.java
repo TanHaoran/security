@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -105,6 +106,7 @@ public class UserController {
 
     /**
      * 创建用户
+     *
      * @param user
      * @param errors
      * @return
@@ -122,5 +124,39 @@ public class UserController {
         log.info("birthday={}", user.getBirthday());
         user.setId("1");
         return user;
+    }
+
+    /**
+     * 修改用户
+     *
+     * @param user
+     * @param errors
+     * @return
+     */
+    @PutMapping("/{id:\\d+}")
+    public User update(@Valid @RequestBody User user, BindingResult errors) {
+        if (errors.hasErrors()) {
+            errors.getAllErrors().stream().forEach(error -> {
+                FieldError fieldError = (FieldError) error;
+                log.info("【错误字段】{},【错误信息】{}", fieldError.getField(), error.getDefaultMessage());
+            });
+        }
+
+        log.info("id={}", user.getId());
+        log.info("username={}", user.getUsername());
+        log.info("password={}", user.getPassword());
+        log.info("birthday={}", user.getBirthday());
+        user.setId("1");
+        return user;
+    }
+
+    /**
+     * 删除用户
+     *
+     * @param id
+     */
+    @DeleteMapping("/{id:\\d+}")
+    public void delete(@PathVariable String id) {
+        log.info("id={}", id);
     }
 }

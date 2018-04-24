@@ -2,6 +2,7 @@ package com.jerry.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.jerry.validator.MyConstraint;
 import lombok.Data;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -28,16 +29,17 @@ public class User {
     private String id;
 
     @JsonView(UserSimpleView.class)
+    @MyConstraint(message = "这是一个测试")
     private String username;
 
     @JsonView(UserDetailView.class)
     // 校验不允许为空
-    @NotBlank
+    @NotBlank(message = "密码不能为空")
     private String password;
 
     @JsonView(UserSimpleView.class)
     // 必须是过去的时间
-    @Past
+    @Past(message = "生日必须是过去的时间")
     private Date birthday;
 }
 
