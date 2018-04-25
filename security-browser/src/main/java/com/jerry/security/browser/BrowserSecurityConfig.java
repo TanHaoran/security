@@ -1,5 +1,7 @@
 package com.jerry.security.browser;
 
+import com.jerry.security.core.properties.SecurityProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,6 +19,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private SecurityProperties securityProperties;
+
     /**
      * 加密解密的工具类，这里可以定义我们自己实现加密解密的实现类，只需要实现PasswordEncoder接口就好
      *
@@ -33,13 +38,24 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 // formLogin()是表单登录,httpBasic()是默认的弹窗登录
                 .formLogin()
-                .and()
+                .loginPage("/authentication/require")
+                // 告诉UsernamePasswordAuthenticationFilter处理下面这个请求
+                .loginProcessingUrl("/authentication/form")
 
+                .and()
                 // authorizeRequests后面跟的都是已授权地址
                 .authorizeRequests()
+                .antMatchers(
+                        "/authentication/require",
+                        securityProperties.getBrowser().getLoginPage()
+                ).permitAll()
                 // 对其他所有请求
                 .anyRequest()
                 // 都需要授权
-                .authenticated();
+                .authenticated()
+
+                .and()
+                // 关闭跨域防护伪造
+                .csrf().disable();
     }
 }
