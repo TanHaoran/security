@@ -7,6 +7,10 @@ import com.jerry.exception.UserNotExistException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -170,5 +174,35 @@ public class UserController {
     @GetMapping("/error/{id:\\d+}")
     public User error(@PathVariable("id") String id) {
         throw new UserNotExistException(id);
+    }
+
+    /**
+     * 获取当前用户信息
+     *
+     * @return
+     */
+    @GetMapping("/me")
+    public Object getCurrentUser() {
+        return SecurityContextHolder.getContext().getAuthentication();
+    }
+
+    /**
+     * 获取当前用户信息
+     *
+     * @return
+     */
+    @GetMapping("/authentication")
+    public Object getAuthentication(Authentication authentication) {
+        return authentication;
+    }
+
+    /**
+     * 获取当前用户UserDetails信息
+     *
+     * @return
+     */
+    @GetMapping("/userDetails")
+    public Object getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {
+        return userDetails;
     }
 }
