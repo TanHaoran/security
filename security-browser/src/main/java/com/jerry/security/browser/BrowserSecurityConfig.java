@@ -8,6 +8,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 /**
  * Created with IntelliJ IDEA.
@@ -21,6 +23,12 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private SecurityProperties securityProperties;
+
+    @Autowired
+    private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler myAuthenticationFailureHandler;
 
     /**
      * 加密解密的工具类，这里可以定义我们自己实现加密解密的实现类，只需要实现PasswordEncoder接口就好
@@ -41,6 +49,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .loginPage("/authentication/require")
                 // 告诉UsernamePasswordAuthenticationFilter处理下面这个请求
                 .loginProcessingUrl("/authentication/form")
+                .successHandler(myAuthenticationSuccessHandler)
+                .failureHandler(myAuthenticationFailureHandler)
 
                 .and()
                 // authorizeRequests后面跟的都是已授权地址
