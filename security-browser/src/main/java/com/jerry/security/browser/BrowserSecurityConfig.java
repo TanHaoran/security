@@ -48,6 +48,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         // 创建验证码过滤器
         ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
         validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        validateCodeFilter.setSecurityProperties(securityProperties);
+        // 调用afterPropertiesSet()初始化设置url集合
+        validateCodeFilter.afterPropertiesSet();
 
         http
                 // 将自定义的验证码过滤器加在UsernamePasswordAuthenticationFilter之前做判断
