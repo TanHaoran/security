@@ -1,6 +1,7 @@
 package com.jerry.security.browser.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jerry.security.browser.support.SimpleResponse;
 import com.jerry.security.core.properties.LoginType;
 import com.jerry.security.core.properties.SecurityProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -42,7 +43,8 @@ public class MyAuthenticationFailureHandler extends SimpleUrlAuthenticationFailu
         if (LoginType.JSON.equals(securityProperties.getBrowser().getLoginType())) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             response.setContentType("application/json;charset=UTF-8");
-            response.getWriter().write(objectMapper.writeValueAsString(exception));
+            // 错误的时候不要输出整个堆栈的异常，只抛出异常的错误信息就可以了
+            response.getWriter().write(objectMapper.writeValueAsString(new SimpleResponse(exception.getMessage())));
         } else {
             super.onAuthenticationFailure(request, response, exception);
         }

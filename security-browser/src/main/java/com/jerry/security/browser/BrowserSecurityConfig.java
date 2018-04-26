@@ -1,6 +1,7 @@
 package com.jerry.security.browser;
 
 import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.validate.code.ValidateCodeFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,7 +45,14 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
+        // 创建验证码过滤器
+        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
+        validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+
         http
+                // 将自定义的验证码过滤器加在UsernamePasswordAuthenticationFilter之前做判断
+                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+
                 // formLogin()是表单登录,httpBasic()是默认的弹窗登录
                 .formLogin()
                 .loginPage("/authentication/require")
@@ -57,7 +66,8 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(
                         "/authentication/require",
-                        securityProperties.getBrowser().getLoginPage()
+                        securityProperties.getBrowser().getLoginPage(),
+                        "/code/image"
                 ).permitAll()
                 // 对其他所有请求
                 .anyRequest()
