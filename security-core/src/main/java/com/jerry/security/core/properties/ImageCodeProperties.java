@@ -20,5 +20,5 @@ public class ImageCodeProperties {
     /**
      * 使用逗号隔开的多个URL，注意不要有空格
      */
-    private String url;
+    private String url = "";
 }

@@ -13,7 +13,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * Time: 11:12
  * Description: 自定义的验证码生成器
  */
-@Component("imageCodeGenerator")
+// @Component("imageCodeGenerator")
 @Slf4j
 public class DemoImageCodeGenerator implements ValidateCodeGenerator {
     @Override
