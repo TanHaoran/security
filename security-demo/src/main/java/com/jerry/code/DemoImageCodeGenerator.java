@@ -1,9 +1,8 @@
 package com.jerry.code;
 
-import com.jerry.security.core.validate.code.ImageCode;
+import com.jerry.security.core.validate.code.image.ImageCode;
 import com.jerry.security.core.validate.code.ValidateCodeGenerator;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.ServletWebRequest;
 
 /**

@@ -1,6 +1,7 @@
 package com.jerry.security.core.validate.code;
 
 import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.validate.code.image.ImageCode;
 import lombok.Data;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -92,7 +93,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
         // 从Session获取访问signIn.html页面生成的验证码
         ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request,
-                ValidateCodeController.SESSION_KEY);
+                ValidateCodeProcessor.SESSION_KEY_PREFIX);
 
         // 从请求中取出用户输入的验证码
         String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
@@ -107,7 +108,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
         if (codeInSession.isExpired()) {
             // 如果过期了就要从Session中移除验证码
-            sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+            sessionStrategy.removeAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX);
             throw new ValidateCodeException("验证码已过期");
         }
 
@@ -116,6 +117,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         }
 
         // 如果验证都成功，就从session中移除验证阿妈
-        sessionStrategy.removeAttribute(request, ValidateCodeController.SESSION_KEY);
+        sessionStrategy.removeAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX);
     }
 }

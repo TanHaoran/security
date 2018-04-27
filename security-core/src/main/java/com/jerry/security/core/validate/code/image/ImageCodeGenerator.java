@@ -1,6 +1,7 @@
-package com.jerry.security.core.validate.code;
+package com.jerry.security.core.validate.code.image;
 
 import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.validate.code.ValidateCodeGenerator;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.ServletRequestUtils;

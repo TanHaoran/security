@@ -10,15 +10,14 @@ import lombok.Data;
  * Description: 图形验证码属性类
  */
 @Data
-public class ImageCodeProperties {
+public class ImageCodeProperties extends SmsCodeProperties {
 
     private int width = 67;
     private int height = 23;
-    private int length = 4;
-    private int expireIn = 60;
 
-    /**
-     * 使用逗号隔开的多个URL，注意不要有空格
-     */
-    private String url = "";
+    public ImageCodeProperties() {
+        // 初始化图形验证码的长度为4
+        setLength(4);
+    }
+
 }
