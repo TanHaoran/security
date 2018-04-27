@@ -30,7 +30,7 @@ import java.util.Set;
  * Description: 校验码过滤器，继承的OncePerRequestFilter保证这个过滤器只被调用一次
  */
 @Data
-public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
+public class SmsCodeFilter extends OncePerRequestFilter implements InitializingBean {
 
     private AuthenticationFailureHandler authenticationFailureHandler;
 
@@ -51,13 +51,13 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
         String[] configUrls = StringUtils.splitByWholeSeparatorPreserveAllTokens(
-                securityProperties.getCode().getImage().getUrl(), ",");
+                securityProperties.getCode().getSms().getUrl(), ",");
         // 将所有配置的需要验证码过滤器校验的url加入集合
         for (String configUrl : configUrls) {
             urls.add(configUrl);
         }
         // 登录URL是一定要加入的
-        urls.add("/authentication/form");
+        urls.add("/authentication/mobile");
     }
 
     @Override
@@ -92,11 +92,11 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
      */
     private void validate(ServletWebRequest request) throws ServletRequestBindingException {
         // 从Session获取访问signIn.html页面生成的验证码
-        ImageCode codeInSession = (ImageCode) sessionStrategy.getAttribute(request,
-                ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");
+        ValidateCode codeInSession = (ValidateCode) sessionStrategy.getAttribute(request,
+                ValidateCodeProcessor.SESSION_KEY_PREFIX + "SMS");
 
         // 从请求中取出用户输入的验证码
-        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "imageCode");
+        String codeInRequest = ServletRequestUtils.getStringParameter(request.getRequest(), "smsCode");
 
         if (StringUtils.isBlank(codeInRequest)) {
             throw new ValidateCodeException("验证码不能为空");
@@ -108,7 +108,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
 
         if (codeInSession.isExpired()) {
             // 如果过期了就要从Session中移除验证码
-            sessionStrategy.removeAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");
+            sessionStrategy.removeAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX+ "SMS");
             throw new ValidateCodeException("验证码已过期");
         }
 
@@ -117,6 +117,6 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
         }
 
         // 如果验证都成功，就从session中移除验证阿妈
-        sessionStrategy.removeAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX + "IMAGE");
+        sessionStrategy.removeAttribute(request, ValidateCodeProcessor.SESSION_KEY_PREFIX+ "SMS");
     }
 }
