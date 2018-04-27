@@ -1,7 +1,9 @@
 package com.jerry.security.browser;
 
 import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.validate.code.SmsCodeFilter;
 import com.jerry.security.core.validate.code.ValidateCodeFilter;
+import com.jerry.security.core.validate.code.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +48,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
     /**
      * 加密解密的工具类，这里可以定义我们自己实现加密解密的实现类，只需要实现PasswordEncoder接口就好
      *
@@ -75,9 +80,18 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
         // 调用afterPropertiesSet()初始化设置url集合
         validateCodeFilter.afterPropertiesSet();
 
+        // 创建短信验证码过滤器
+        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
+        smsCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
+        smsCodeFilter.setSecurityProperties(securityProperties);
+        // 调用afterPropertiesSet()初始化设置url集合
+        smsCodeFilter.afterPropertiesSet();
+
         http
                 // 将自定义的验证码过滤器加在UsernamePasswordAuthenticationFilter之前做判断
                 .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                // 将自定义的短信验证码过滤器加在UsernamePasswordAuthenticationFilter之前做判断
+                .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
 
                 // formLogin()是表单登录,httpBasic()是默认的弹窗登录
                 .formLogin()
@@ -110,6 +124,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 // 关闭跨域防护伪造
-                .csrf().disable();
+                .csrf().disable()
+
+                // 将短信验证码配置加进浏览器配置中
+                .apply(smsCodeAuthenticationSecurityConfig);
     }
 }
