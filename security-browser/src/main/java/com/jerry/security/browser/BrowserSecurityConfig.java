@@ -1,20 +1,17 @@
 package com.jerry.security.browser;
 
+import com.jerry.security.core.authentication.AbstractChannelSecurityConfig;
+import com.jerry.security.core.properties.SecurityConstants;
 import com.jerry.security.core.properties.SecurityProperties;
-import com.jerry.security.core.validate.code.SmsCodeFilter;
-import com.jerry.security.core.validate.code.ValidateCodeFilter;
+import com.jerry.security.core.validate.code.ValidateCodeSecurityConfig;
 import com.jerry.security.core.validate.code.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 
@@ -28,16 +25,10 @@ import javax.sql.DataSource;
  * Description: 浏览器项目主配置类
  */
 @Configuration
-public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
+public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private SecurityProperties securityProperties;
-
-    @Autowired
-    private AuthenticationSuccessHandler myAuthenticationSuccessHandler;
-
-    @Autowired
-    private AuthenticationFailureHandler myAuthenticationFailureHandler;
 
     /**
      * 这里DateSource就会读取application.properties中配置的数据源信息
@@ -47,6 +38,9 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
 
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
@@ -73,33 +67,16 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        // 创建验证码过滤器
-        ValidateCodeFilter validateCodeFilter = new ValidateCodeFilter();
-        validateCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
-        validateCodeFilter.setSecurityProperties(securityProperties);
-        // 调用afterPropertiesSet()初始化设置url集合
-        validateCodeFilter.afterPropertiesSet();
-
-        // 创建短信验证码过滤器
-        SmsCodeFilter smsCodeFilter = new SmsCodeFilter();
-        smsCodeFilter.setAuthenticationFailureHandler(myAuthenticationFailureHandler);
-        smsCodeFilter.setSecurityProperties(securityProperties);
-        // 调用afterPropertiesSet()初始化设置url集合
-        smsCodeFilter.afterPropertiesSet();
+        // 配置和用户名密码登录相关的配置
+        applyPasswordAuthenticationConfig(http);
 
         http
-                // 将自定义的验证码过滤器加在UsernamePasswordAuthenticationFilter之前做判断
-                .addFilterBefore(validateCodeFilter, UsernamePasswordAuthenticationFilter.class)
-                // 将自定义的短信验证码过滤器加在UsernamePasswordAuthenticationFilter之前做判断
-                .addFilterBefore(smsCodeFilter, UsernamePasswordAuthenticationFilter.class)
+                // 设置验证码相关的配置
+                .apply(validateCodeSecurityConfig)
 
-                // formLogin()是表单登录,httpBasic()是默认的弹窗登录
-                .formLogin()
-                .loginPage("/authentication/require")
-                // 告诉UsernamePasswordAuthenticationFilter处理下面这个请求
-                .loginProcessingUrl("/authentication/form")
-                .successHandler(myAuthenticationSuccessHandler)
-                .failureHandler(myAuthenticationFailureHandler)
+                // 设置短信登录相关的配置
+                .and()
+                .apply(smsCodeAuthenticationSecurityConfig)
 
                 // 记住我的配置
                 .and()
@@ -113,9 +90,10 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
                 // authorizeRequests后面跟的都是已授权地址
                 .authorizeRequests()
                 .antMatchers(
-                        "/authentication/require",
+                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
+                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
                         securityProperties.getBrowser().getLoginPage(),
-                        "/code/*"
+                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*"
                 ).permitAll()
                 // 对其他所有请求
                 .anyRequest()
@@ -124,9 +102,6 @@ public class BrowserSecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 // 关闭跨域防护伪造
-                .csrf().disable()
-
-                // 将短信验证码配置加进浏览器配置中
-                .apply(smsCodeAuthenticationSecurityConfig);
+                .csrf().disable();
     }
 }
