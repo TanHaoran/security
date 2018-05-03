@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * User: Jerry
  * Date: 2018/4/26
  * Time: 11:04
- * Description: 验证码Bean配置类
+ * Description: 验证码Bean配置类，这里配置了一个图形验证码生成器和短信验证码发送器，两个都可以自己覆盖实现
  */
 @Configuration
 public class ValidateCodeBeanConfig {

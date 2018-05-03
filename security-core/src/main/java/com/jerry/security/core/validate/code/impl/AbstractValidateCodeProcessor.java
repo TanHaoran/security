@@ -16,7 +16,7 @@ import java.util.Map;
  * User: Jerry
  * Date: 2018/4/27
  * Time: 10:22
- * Description: 默认的验证码处理器实现类
+ * Description: 默认的验证码处理器实现类，已经实现好了create方法中的生成、存储以及校验的方法，需要子类实现发送的方法。
  */
 public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> implements ValidateCodeProcessor {
 
@@ -124,7 +124,7 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
 
 
     /**
-     * 根据请求的url获取校验码的类型
+     * 根据请求的url获取验证码的类型
      *
      * @param request
      * @return

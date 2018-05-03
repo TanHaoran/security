@@ -23,8 +23,14 @@ public class ValidateCodeProcessorHolder {
         return findValidateCodeProcessor(type.toString().toLowerCase());
     }
 
+    /**
+     * 根据枚举类型获取对应的验证码处理器
+     *
+     * @param type 传入进来的类型已经是字符串小写的类型
+     * @return
+     */
     public ValidateCodeProcessor findValidateCodeProcessor(String type) {
-        String name = type.toLowerCase() + SecurityConstants.VALIDATE_CODE_PROCESSOR_SUFFIX;
+        String name = type + SecurityConstants.VALIDATE_CODE_PROCESSOR_SUFFIX;
         ValidateCodeProcessor processor = validateCodeProcessors.get(name);
         if (processor == null) {
             throw new ValidateCodeException("验证码处理器" + name + "不存在");

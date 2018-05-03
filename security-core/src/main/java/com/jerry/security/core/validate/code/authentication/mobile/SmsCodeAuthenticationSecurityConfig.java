@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
  * User: Jerry
  * Date: 2018/4/27
  * Time: 15:50
- * Description: 是短信验证码登录生效的配置类
+ * Description: 是短信验证码过滤器、Provider等一系列加入过滤器链并使之生效的配置类
  */
 @Component
 public class SmsCodeAuthenticationSecurityConfig extends

@@ -25,7 +25,7 @@ import java.util.Set;
  * User: Jerry
  * Date: 2018/4/26
  * Time: 9:32
- * Description: 校验码过滤器，继承的OncePerRequestFilter保证这个过滤器只被调用一次
+ * Description: 验证码过滤器，用于校验验证码是否正确等规则。继承的OncePerRequestFilter保证这个过滤器只被调用一次
  */
 @Component("validateCodeFilter")
 public class ValidateCodeFilter extends OncePerRequestFilter implements InitializingBean {
@@ -41,7 +41,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     @Autowired
     private SecurityProperties securityProperties;
     /**
-     * 系统中的校验码处理器
+     * 系统中的验证码码处理器
      */
     @Autowired
     private ValidateCodeProcessorHolder validateCodeProcessorHolder;
@@ -55,15 +55,17 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
     /**
-     * 初始化要拦截的url配置信息
+     * 初始化要拦截的url配置信息，key存放的是URL地址，value存放的是枚举类型
      */
     @Override
     public void afterPropertiesSet() throws ServletException {
         super.afterPropertiesSet();
 
+        // 加入关于请求图形验证码的路径
         urlMap.put(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_FORM, ValidateCodeType.IMAGE);
         addUrlToMap(securityProperties.getCode().getImage().getUrl(), ValidateCodeType.IMAGE);
 
+        // 加入关于请求短信验证码的路径
         urlMap.put(SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE, ValidateCodeType.SMS);
         addUrlToMap(securityProperties.getCode().getSms().getUrl(), ValidateCodeType.SMS);
     }
@@ -84,6 +86,14 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
 
+    /**
+     * 校验的主要逻辑，如果通过交给下一个过滤器
+     * @param request
+     * @param response
+     * @param chain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
@@ -106,7 +116,7 @@ public class ValidateCodeFilter extends OncePerRequestFilter implements Initiali
     }
 
     /**
-     * 获取校验码的类型，如果当前请求不需要校验，则返回null
+     * 根据请求获取验证码的类型，如果当前请求不需要校验，则返回null
      *
      * @param request
      * @return

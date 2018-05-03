@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * User: Jerry
  * Date: 2018/4/27
  * Time: 15:30
- * Description:
+ * Description: 用来给短信验证码登录方式提供处理的提供者
  */
 @Data
 public class SmsCodeAuthenticationProvider implements AuthenticationProvider {

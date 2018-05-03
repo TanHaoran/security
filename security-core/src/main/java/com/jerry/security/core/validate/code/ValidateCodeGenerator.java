@@ -7,7 +7,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * User: Jerry
  * Date: 2018/4/26
  * Time: 10:59
- * Description: 校验码生成器
+ * Description: 验证码生成器
  */
 public interface ValidateCodeGenerator {
 

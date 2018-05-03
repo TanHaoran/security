@@ -13,7 +13,7 @@ import org.springframework.web.context.request.ServletWebRequest;
  * User: Jerry
  * Date: 2018/4/27
  * Time: 9:58
- * Description:
+ * Description: 默认的短信验证码生成器，因为生成规则改变的可能性不大，所以不需要自己实现。
  */
 @Component("smsCodeGenerator")
 public class SmsCodeGenerator implements ValidateCodeGenerator {

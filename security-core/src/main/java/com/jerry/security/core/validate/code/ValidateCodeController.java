@@ -19,7 +19,7 @@ import java.util.Map;
  * User: Jerry
  * Date: 2018/4/26
  * Time: 9:17
- * Description: 校验码Controller
+ * Description: 验证码Controller
  */
 @RestController
 @Data
@@ -37,6 +37,7 @@ public class ValidateCodeController {
     public void createCode(HttpServletRequest request, HttpServletResponse response,
                            @PathVariable String type) throws Exception {
 
+        // 根据请求类型从处理器Map中找出对应的处理器进行创建验证码的操作，包括(生成、存储、发送)
         validateCodeProcessorMap.get(type + SecurityConstants.VALIDATE_CODE_PROCESSOR_SUFFIX)
                 .create(new ServletWebRequest(request, response));
     }

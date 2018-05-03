@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
  * User: Jerry
  * Date: 2018/4/27
  * Time: 9:44
- * Description:
+ * Description: 默认的短信发送器，如果有更好的实现方式，需要实现SmsCodeSender接口就可以（因为ValidateCodeBeanConfig中定义的是Class)
  */
 @Slf4j
 public class DefaultSmsCodeSender implements SmsCodeSender {

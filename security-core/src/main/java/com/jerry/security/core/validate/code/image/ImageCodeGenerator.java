@@ -16,7 +16,8 @@ import java.util.Random;
  * User: Jerry
  * Date: 2018/4/26
  * Time: 11:01
- * Description:
+ * Description: 默认的图形验证码生成器
+ * 如果有更好的图形验证码生成器需要实现ValidateCodeGenerator接口，并注明组件名为ValidateCodeBeanConfig中声明的imageCodeGenerator
  */
 @Data
 public class ImageCodeGenerator implements ValidateCodeGenerator {
