@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
 
@@ -44,6 +45,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
+
+    @Autowired
+    private SpringSocialConfigurer mySocialSecurityConfigurer;
 
     /**
      * 加密解密的工具类，这里可以定义我们自己实现加密解密的实现类，只需要实现PasswordEncoder接口就好
@@ -77,6 +81,10 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 // 设置短信登录相关的配置
                 .and()
                 .apply(smsCodeAuthenticationSecurityConfig)
+
+                // 社交登录相关配置
+                .and()
+                .apply(mySocialSecurityConfigurer)
 
                 // 记住我的配置
                 .and()

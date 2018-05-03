@@ -1,4 +1,4 @@
-package com.jerry.security.browser;
+package com.jerry.security;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +10,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.social.security.SocialUser;
+import org.springframework.social.security.SocialUserDetails;
+import org.springframework.social.security.SocialUserDetailsService;
 import org.springframework.stereotype.Component;
 
 /**
@@ -21,7 +24,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Slf4j
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements UserDetailsService, SocialUserDetailsService {
 
     /**
      * 注入在BrowserSecurityConfig中加入@Bean的PasswordEncoder
@@ -31,7 +34,17 @@ public class MyUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        log.info("登陆用户名:" + username);
+        log.info("表单登陆用户名:" + username);
+        return buildUser(username);
+    }
+
+    @Override
+    public SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException {
+        log.info("社交登陆用户Id:" + userId);
+        return buildUser(userId);
+    }
+
+    private SocialUserDetails buildUser(String username) {
 
         // 这里写根据用户名查找用户信息操作
 
@@ -40,7 +53,7 @@ public class MyUserDetailsService implements UserDetailsService {
         String password = passwordEncoder.encode("123456");
         log.info("数据库密码:" + password);
 
-        return new User(username, password,
+        return new SocialUser(username, password,
                 true, true, true, true,
                 AuthorityUtils.commaSeparatedStringToAuthorityList("admin"));
     }
