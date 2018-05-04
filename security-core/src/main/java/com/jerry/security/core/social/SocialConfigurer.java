@@ -1,5 +1,6 @@
 package com.jerry.security.core.social;
 
+import com.jerry.security.core.properties.SecurityProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,9 +28,15 @@ public class SocialConfigurer extends SocialConfigurerAdapter {
     @Autowired
     private DataSource dataSource;
 
+    @Autowired
+    private SecurityProperties securityProperties;
+
     @Bean
     public SpringSocialConfigurer mySocialSecurityConfigurer() {
-        return new SpringSocialConfigurer();
+        // 这里就是用我们自定义的配置，内部设置了过滤器需要处理的URL
+        String filterProcessesUrl = securityProperties.getSocial().getFilterProcessesUrl();
+        MySpringSocialConfigurer configurer = new MySpringSocialConfigurer(filterProcessesUrl);
+        return configurer;
     }
 
     @Override

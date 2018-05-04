@@ -3,7 +3,6 @@ package com.jerry.security.core.social.qq.connect;
 import com.jerry.security.core.social.qq.api.QQ;
 import com.jerry.security.core.social.qq.api.impl.QQImpl;
 import org.springframework.social.oauth2.AbstractOAuth2ServiceProvider;
-import org.springframework.social.oauth2.OAuth2Template;
 
 /**
  * Created with IntelliJ IDEA.
@@ -27,7 +26,8 @@ public class QQServiceProvider extends AbstractOAuth2ServiceProvider<QQ> {
     private String appId;
 
     public QQServiceProvider(String appId, String appSecret) {
-        super(new OAuth2Template(appId, appSecret, URL_AUTHORIZE, URL_ACCESS_TOKEN));
+        // 这里改用我们自己实现的QQOAuth2Template，里面有对令牌、过期时间和刷新令牌正确解析
+        super(new QQOAuth2Template(appId, appSecret, URL_AUTHORIZE, URL_ACCESS_TOKEN));
         this.appId = appId;
     }
 
