@@ -73,6 +73,11 @@ public class BrowserSecurityController {
         return new SimpleResponse("访问的服务需要身份认证，请引导用到登录页");
     }
 
+    /**
+     * 当用户授权完成后能在界面上有一个友好界面展示用户信息
+     * @param request
+     * @return
+     */
     @GetMapping("/social/user")
     public SocialUserInfo getSocialUserInfo(HttpServletRequest request) {
         SocialUserInfo socialUserInfo = new SocialUserInfo();

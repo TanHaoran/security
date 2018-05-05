@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Time: 13:56
  * Description: 实现了这个接口就可以实现社交账号授权直接注册进入系统
  */
-@Component
+// @Component
 public class DemoConnectionSignUp implements ConnectionSignUp {
 
     @Override
