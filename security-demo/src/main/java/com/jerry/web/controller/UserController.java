@@ -5,16 +5,20 @@ import com.jerry.dto.User;
 import com.jerry.dto.UserQueryCondition;
 import com.jerry.exception.UserNotExistException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.social.connect.web.ProviderSignInUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.ServletWebRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +34,9 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/user")
 public class UserController {
+
+    @Autowired
+    private ProviderSignInUtils providerSignInUtils;
 
     /**
      * 普通查询，返回一个集合
@@ -204,5 +211,17 @@ public class UserController {
     @GetMapping("/userDetails")
     public Object getUserDetails(@AuthenticationPrincipal UserDetails userDetails) {
         return userDetails;
+    }
+
+    /**
+     * 使用社交账号登录后的注册
+     *
+     * @param user
+     */
+    @PostMapping("/register")
+    public void register(User user, HttpServletRequest request) {
+        // 无论是注册还是绑定，都会拿到一个唯一标识
+        String userId = user.getUsername();
+        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
     }
 }

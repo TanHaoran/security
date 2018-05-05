@@ -17,4 +17,9 @@ public class BrowserProperties {
     private LoginType loginType = LoginType.JSON;
 
     private int rememberMeSeconds = 3600;
+
+    /**
+     * 默认的社交账号登录后的注册页面
+     */
+    private String signUpUrl = SecurityConstants.DEFAULT_SIGN_UP_URL;
 }
