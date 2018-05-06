@@ -99,9 +99,11 @@ public abstract class AbstractValidateCodeProcessor<C extends ValidateCode> impl
      * @param validateCode
      */
     private void save(ServletWebRequest request, C validateCode) {
+        // 取出验证码内容和过期时间，避免了放置图像到Redis而报错
+        ValidateCode code = new ValidateCode(validateCode.getCode(), validateCode.getExpireTime());
         // 保存进Session
         sessionStrategy.setAttribute(request, SESSION_KEY_PREFIX + getProcessorType(request).toUpperCase(),
-                validateCode);
+                code);
     }
 
     /**
