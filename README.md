@@ -16,4 +16,5 @@
 ###第6章 Spring Security OAuth开发APP认证框架
 ####6-1 SpringSecurityOAuth简介
 ####6-2 实现标准的OAuth服务提供商
+####6-3 SpringSecurityOAuth核心源码解析
 
