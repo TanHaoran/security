@@ -13,6 +13,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.session.InvalidSessionStrategy;
@@ -63,6 +64,12 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
      */
     @Autowired
     private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
+
+    /**
+     * 退出成功处理器
+     */
+    @Autowired
+    private LogoutSuccessHandler logoutSuccessHandler;
 
     /**
      * 加密解密的工具类，这里可以定义我们自己实现加密解密的实现类，只需要实现PasswordEncoder接口就好
@@ -122,6 +129,18 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .expiredSessionStrategy(sessionInformationExpiredStrategy)
                 .and()
 
+                // 退出登录相关的配置
+                .and()
+                .logout()
+                // 配置处理退出登录的URL
+                .logoutUrl("/signOut")
+                // 下面两个logoutSuccessUrl和logoutSuccessHandler是互斥的，配置一个后另一个就会失效
+                // 配置退出 登录后跳转的URL
+                // .logoutSuccessUrl("/logout.html")
+                .logoutSuccessHandler(logoutSuccessHandler)
+                // 删除浏览器中Cookie
+                .deleteCookies("JSESSIONID")
+
                 .and()
                 // authorizeRequests后面跟的都是已授权地址
                 .authorizeRequests()
@@ -133,7 +152,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         securityProperties.getBrowser().getSignUpUrl(),
                         "/user/register",
                         securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".json",
-                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html"
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html",
+                        securityProperties.getBrowser().getSignOutUrl()
                 ).permitAll()
                 // 对其他所有请求
                 .anyRequest()
