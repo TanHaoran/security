@@ -22,4 +22,9 @@ public class BrowserProperties {
      * 默认的社交账号登录后的注册页面
      */
     private String signUpUrl = SecurityConstants.DEFAULT_SIGN_UP_URL;
+
+    /**
+     * Session相关配置
+     */
+    private SessionProperties session = new SessionProperties();
 }

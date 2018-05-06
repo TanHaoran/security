@@ -50,4 +50,8 @@ public interface SecurityConstants {
      * 验证码处理器名称的后缀
      */
     String VALIDATE_CODE_PROCESSOR_SUFFIX = "CodeProcessor";
+    /**
+     * session失效默认的跳转地址
+     */
+    String DEFAULT_SESSION_INVALID_URL = "/session/invalid";
 }

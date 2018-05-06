@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.InvalidSessionStrategy;
+import org.springframework.security.web.session.SessionInformationExpiredStrategy;
 import org.springframework.social.security.SpringSocialConfigurer;
 
 import javax.sql.DataSource;
@@ -49,6 +51,18 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
 
     @Autowired
     private SpringSocialConfigurer mySocialSecurityConfigurer;
+
+    /**
+     * Session过期的处理策略
+     */
+    @Autowired
+    private InvalidSessionStrategy invalidSessionStrategy;
+
+    /**
+     * Session并发时，后面Session踢掉前面Session，对前面用户做的处理策略
+     */
+    @Autowired
+    private SessionInformationExpiredStrategy sessionInformationExpiredStrategy;
 
     /**
      * 加密解密的工具类，这里可以定义我们自己实现加密解密的实现类，只需要实现PasswordEncoder接口就好
@@ -98,14 +112,14 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 // Session相关配置
                 .and()
                 .sessionManagement()
-                // 设置当Session过期跳转的请求
-                .invalidSessionUrl("/session/invalid")
+                // 设置当Session过期时的策略处理
+                .invalidSessionStrategy(invalidSessionStrategy)
                 // 设置最大的Session数量，即用户在后面登录产生的Session会把前面登录时的Session失效掉。
-                .maximumSessions(1)
+                .maximumSessions(securityProperties.getBrowser().getSession().getMaximumSessions())
                 // 设置这个表示当Session数量达到最大数后，会阻值后面的用户进行登录
-                .maxSessionsPreventsLogin(true)
-                // 配置这个，就可以针对后面用户登录踢掉前面用户，对被踢掉的用户做一个URL导向处理
-                .expiredSessionStrategy(new MyExpiredSessionStrategy())
+                .maxSessionsPreventsLogin(securityProperties.getBrowser().getSession().isMaxSessionsPreventsLogin())
+                // 配置这个，就可以针对后面用户登录踢掉前面用户，对被踢掉的用户做一个处理
+                .expiredSessionStrategy(sessionInformationExpiredStrategy)
                 .and()
 
                 .and()
@@ -118,7 +132,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
                         securityProperties.getBrowser().getSignUpUrl(),
                         "/user/register",
-                        "/session/invalid"
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".json",
+                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html"
                 ).permitAll()
                 // 对其他所有请求
                 .anyRequest()
