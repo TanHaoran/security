@@ -1,12 +1,11 @@
 package com.jerry.security.browser;
 
-import com.jerry.security.browser.support.SimpleResponse;
 import com.jerry.security.browser.support.SocialUserInfo;
 import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.support.SimpleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;

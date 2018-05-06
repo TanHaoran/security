@@ -1,4 +1,4 @@
-package com.jerry.security.core.validate.code.authentication.mobile;
+package com.jerry.security.core.authentication.mobile;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;

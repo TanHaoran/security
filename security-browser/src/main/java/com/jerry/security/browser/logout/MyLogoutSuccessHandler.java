@@ -1,15 +1,12 @@
 package com.jerry.security.browser.logout;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jerry.security.browser.support.SimpleResponse;
-import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.support.SimpleResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;

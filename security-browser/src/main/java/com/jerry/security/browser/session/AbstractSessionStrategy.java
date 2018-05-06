@@ -1,7 +1,7 @@
 package com.jerry.security.browser.session;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.jerry.security.browser.support.SimpleResponse;
+import com.jerry.security.core.support.SimpleResponse;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;

@@ -11,11 +11,16 @@
 
     <artifactId>security-demo</artifactId>
 
-    <!--首先引用security-browser相关-->
     <dependencies>
+        <!--<dependency>-->
+            <!--<groupId>com.jerry.security</groupId>-->
+            <!--<artifactId>security-browser</artifactId>-->
+            <!--<version>${security.version}</version>-->
+        <!--</dependency>-->
+
         <dependency>
             <groupId>com.jerry.security</groupId>
-            <artifactId>security-browser</artifactId>
+            <artifactId>security-app</artifactId>
             <version>${security.version}</version>
         </dependency>
 

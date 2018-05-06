@@ -1,4 +1,4 @@
-package com.jerry.security.browser.support;
+package com.jerry.security.core.support;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.jerry.security.browser.authentication;
+package com.jerry.security.app.authentication;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jerry.security.core.properties.LoginType;
