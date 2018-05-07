@@ -1,5 +1,6 @@
 package com.jerry.security.app;
 
+import com.jerry.security.app.social.openid.OpenIdAuthenticationSecurityConfig;
 import com.jerry.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.jerry.security.core.properties.SecurityConstants;
 import com.jerry.security.core.properties.SecurityProperties;
@@ -42,6 +43,9 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     private SpringSocialConfigurer mySocialSecurityConfigurer;
 
+    @Autowired
+    private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // 配置和用户名密码登录相关的配置
@@ -65,6 +69,10 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // 社交登录相关配置
                 .and()
                 .apply(mySocialSecurityConfigurer)
+
+                // openId登录方式相关配置
+                .and()
+                .apply(openIdAuthenticationSecurityConfig)
 
                 .and()
                 // authorizeRequests后面跟的都是已授权地址

@@ -38,6 +38,9 @@ public class SocialConfigurer extends SocialConfigurerAdapter {
     @Autowired(required = false)
     private ConnectionSignUp connectionSignUp;
 
+    @Autowired(required = false)
+    private SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor;
+
     @Bean
     public SpringSocialConfigurer mySocialSecurityConfigurer() {
         // 这里就是用我们自定义的配置，内部设置了过滤器需要处理的URL
@@ -45,6 +48,8 @@ public class SocialConfigurer extends SocialConfigurerAdapter {
         MySpringSocialConfigurer configurer = new MySpringSocialConfigurer(filterProcessesUrl);
         // 配置我们自己自定义的社交账号登录的注册页面
         configurer.signupUrl(securityProperties.getBrowser().getSignUpUrl());
+        // 对于社交账号登录App和浏览器在登录成功后处理方式不同
+        configurer.setSocialAuthenticationFilterPostProcessor(socialAuthenticationFilterPostProcessor);
         return configurer;
     }
 

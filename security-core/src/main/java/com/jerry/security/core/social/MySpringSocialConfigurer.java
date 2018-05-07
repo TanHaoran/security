@@ -1,5 +1,6 @@
 package com.jerry.security.core.social;
 
+import lombok.Data;
 import org.springframework.social.security.SocialAuthenticationFilter;
 import org.springframework.social.security.SpringSocialConfigurer;
 
@@ -10,12 +11,15 @@ import org.springframework.social.security.SpringSocialConfigurer;
  * Time: 9:27
  * Description: 配置SocialAuthenticationFilter过滤器处理URL的配置类
  */
+@Data
 public class MySpringSocialConfigurer extends SpringSocialConfigurer {
 
     /**
      * 过滤器要处理的URL
      */
     private String filterProcessesUrl;
+
+    private SocialAuthenticationFilterPostProcessor socialAuthenticationFilterPostProcessor;
 
     public MySpringSocialConfigurer(String filterProcessesUrl) {
         this.filterProcessesUrl = filterProcessesUrl;
@@ -32,6 +36,9 @@ public class MySpringSocialConfigurer extends SpringSocialConfigurer {
     protected <T> T postProcess(T object) {
         SocialAuthenticationFilter filter = (SocialAuthenticationFilter) super.postProcess(object);
         filter.setFilterProcessesUrl(filterProcessesUrl);
+        if (socialAuthenticationFilterPostProcessor != null) {
+            socialAuthenticationFilterPostProcessor.process(filter);
+        }
         return (T) filter;
     }
 }
