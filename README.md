@@ -17,4 +17,5 @@
 ####6-1 SpringSecurityOAuth简介
 ####6-2 实现标准的OAuth服务提供商
 ####6-3 SpringSecurityOAuth核心源码解析
+####6-4 重构用户名密码登录
 
