@@ -3,6 +3,7 @@ package com.jerry.security.app;
 import com.jerry.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
 import com.jerry.security.core.properties.SecurityConstants;
 import com.jerry.security.core.properties.SecurityProperties;
+import com.jerry.security.core.validate.code.ValidateCodeSecurityConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -33,6 +34,9 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
     protected AuthenticationFailureHandler myAuthenticationFailureHandler;
 
     @Autowired
+    private ValidateCodeSecurityConfig validateCodeSecurityConfig;
+
+    @Autowired
     private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
 
     @Autowired
@@ -52,10 +56,10 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
 
         http
                 // 设置验证码相关的配置
-                // .apply(validateCodeSecurityConfig)
+                .apply(validateCodeSecurityConfig)
 
                 // 设置短信登录相关的配置
-                // .and()
+                .and()
                 .apply(smsCodeAuthenticationSecurityConfig)
 
                 // 社交登录相关配置
