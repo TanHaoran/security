@@ -4,7 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.jerry.dto.User;
 import com.jerry.dto.UserQueryCondition;
 import com.jerry.exception.UserNotExistException;
+import com.jerry.security.app.social.AppSignUpUtils;
 import lombok.extern.slf4j.Slf4j;
+import net.bytebuddy.asm.Advice;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -37,6 +39,9 @@ public class UserController {
 
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
+
+    @Autowired
+    private AppSignUpUtils appSignUpUtils;
 
     /**
      * 普通查询，返回一个集合
@@ -222,6 +227,8 @@ public class UserController {
     public void register(User user, HttpServletRequest request) {
         // 无论是注册还是绑定，都会拿到一个唯一标识
         String userId = user.getUsername();
-        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+        // 设置两种浏览器和App社交登录后注册的不同的处理类型
+        // providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+        appSignUpUtils.doPostSignUp(new ServletWebRequest(request), userId);
     }
 }

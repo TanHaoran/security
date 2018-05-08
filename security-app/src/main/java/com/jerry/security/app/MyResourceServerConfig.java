@@ -86,7 +86,8 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/user/register",
                         securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".json",
                         securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html",
-                        securityProperties.getBrowser().getSignOutUrl()
+                        securityProperties.getBrowser().getSignOutUrl(),
+                        "/social/signUp"
                 ).permitAll()
                 // 对其他所有请求
                 .anyRequest()

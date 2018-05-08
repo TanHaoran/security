@@ -1,5 +1,6 @@
 package com.jerry.security.core.validate.code.sms;
 
+import com.jerry.security.core.properties.SecurityConstants;
 import com.jerry.security.core.validate.code.ValidateCode;
 import com.jerry.security.core.validate.code.impl.AbstractValidateCodeProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,8 @@ public class SmsCodeProcessor extends AbstractValidateCodeProcessor<ValidateCode
     @Override
     protected void send(ServletWebRequest request, ValidateCode smsCode) throws Exception {
         // 读取请求中的手机号
-        String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(), "mobile");
+        String mobile = ServletRequestUtils.getRequiredStringParameter(request.getRequest(),
+                SecurityConstants.DEFAULT_PARAMETER_NAME_MOBILE);
 
         // 发送短信验证码
         smsCodeSender.send(mobile, smsCode.getCode());
