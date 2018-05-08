@@ -13,7 +13,13 @@ import org.springframework.security.oauth2.config.annotation.configurers.ClientD
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancer;
+import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -39,6 +45,18 @@ public class MyAuthorizationServerConfig extends AuthorizationServerConfigurerAd
     private TokenStore tokenStore;
 
     /**
+     * 做一些Token生成中密钥的配置
+     */
+    @Autowired(required = false)
+    private JwtAccessTokenConverter jwtAccessTokenConverter;
+
+    /**
+     * 对Token做增强信息用的
+     */
+    @Autowired(required = false)
+    private TokenEnhancer jwtTokenEnhancer;
+
+    /**
      * 配置TokenEndpoint
      *
      * @param endpoints
@@ -51,6 +69,21 @@ public class MyAuthorizationServerConfig extends AuthorizationServerConfigurerAd
                 .tokenStore(tokenStore)
                 .authenticationManager(authenticationManager)
                 .userDetailsService(userDetailsService);
+
+        if (jwtAccessTokenConverter != null && jwtTokenEnhancer != null) {
+            TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+            List<TokenEnhancer> enhancers = new ArrayList<>();
+
+            // 将密钥设置和增强信息设置加入集合
+            enhancers.add(jwtTokenEnhancer);
+            enhancers.add(jwtAccessTokenConverter);
+
+            tokenEnhancerChain.setTokenEnhancers(enhancers);
+
+            endpoints
+                    .tokenEnhancer(tokenEnhancerChain)
+                    .accessTokenConverter(jwtAccessTokenConverter);
+        }
     }
 
     /**
@@ -76,8 +109,10 @@ public class MyAuthorizationServerConfig extends AuthorizationServerConfigurerAd
                         .secret(config.getClientSecret())
                         // 令牌的有效时间（单位是秒）
                         .accessTokenValiditySeconds(config.getAccessTokenValiditySeconds())
+                        // 设置刷新Token的有效期为一个月
+                        .refreshTokenValiditySeconds(2592000)
                         // 配置支持的授权模式
-                        .authorizedGrantTypes("refresh_token", "password")
+                        .authorizedGrantTypes("refresh_token", "authorization_code", "password")
                         // 发出去的权限有哪些
                         .scopes("all", "read", "write")
                 ;

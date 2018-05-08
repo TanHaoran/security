@@ -5,8 +5,12 @@ import com.jerry.dto.User;
 import com.jerry.dto.UserQueryCondition;
 import com.jerry.exception.UserNotExistException;
 import com.jerry.security.app.social.AppSignUpUtils;
+import com.jerry.security.core.properties.SecurityProperties;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
 import lombok.extern.slf4j.Slf4j;
 import net.bytebuddy.asm.Advice;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -22,6 +26,7 @@ import org.springframework.web.context.request.ServletWebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +47,9 @@ public class UserController {
 
     @Autowired
     private AppSignUpUtils appSignUpUtils;
+
+    @Autowired
+    private SecurityProperties securityProperties;
 
     /**
      * 普通查询，返回一个集合
@@ -204,7 +212,20 @@ public class UserController {
      * @return
      */
     @GetMapping("/authentication")
-    public Object getAuthentication(Authentication authentication) {
+    public Object getAuthentication(Authentication authentication, HttpServletRequest request)
+            throws UnsupportedEncodingException {
+        String header = request.getHeader("Authorization");
+        String token = StringUtils.substringAfter(header, "bearer ");
+
+        // 验签的时候设置密钥并获取自定义信息
+        Claims claims = Jwts.parser()
+                .setSigningKey(securityProperties.getOauth2().getJwtSigningKey().getBytes("UTF-8"))
+                .parseClaimsJws(token).getBody();
+
+        String company = (String) claims.get("company");
+
+        log.info("公司名称:" + company);
+
         return authentication;
     }
 

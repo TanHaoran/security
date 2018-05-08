@@ -13,9 +13,9 @@
 
     <dependencies>
         <!--<dependency>-->
-            <!--<groupId>com.jerry.security</groupId>-->
-            <!--<artifactId>security-browser</artifactId>-->
-            <!--<version>${security.version}</version>-->
+        <!--<groupId>com.jerry.security</groupId>-->
+        <!--<artifactId>security-browser</artifactId>-->
+        <!--<version>${security.version}</version>-->
         <!--</dependency>-->
 
         <dependency>
@@ -47,6 +47,13 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger-ui</artifactId>
             <version>2.7.0</version>
+        </dependency>
+
+        <!--解析自定义jwtToken信息-->
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
+            <version>0.7.0</version>
         </dependency>
     </dependencies>
 
