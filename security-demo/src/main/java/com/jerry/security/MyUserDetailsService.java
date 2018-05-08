@@ -53,8 +53,9 @@ public class MyUserDetailsService implements UserDetailsService, SocialUserDetai
         String password = passwordEncoder.encode("123456");
         log.info("数据库密码:" + password);
 
+        // 这里对权限字符串定义要在配置文件中指定的角色前面加"ROLE_"
         return new SocialUser(username, password,
                 true, true, true, true,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("admin,ROLE_USER"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN,ROLE_USER"));
     }
 }

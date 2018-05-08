@@ -8,6 +8,7 @@ import com.jerry.security.core.authentication.mobile.SmsCodeAuthenticationSecuri
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -143,6 +144,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                         securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html",
                         securityProperties.getBrowser().getSignOutUrl()
                 ).permitAll()
+                // 对所有/user/*的get请求必须具有ROLE_ADMIN权限
+                .antMatchers(HttpMethod.GET,"/user/*").hasRole("ADMIN")
                 // 对其他所有请求
                 .anyRequest()
                 // 都需要授权

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.jerry.dto.User;
 import com.jerry.dto.UserQueryCondition;
 import com.jerry.exception.UserNotExistException;
-import com.jerry.security.app.social.AppSignUpUtils;
 import com.jerry.security.core.properties.SecurityProperties;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -45,8 +44,8 @@ public class UserController {
     @Autowired
     private ProviderSignInUtils providerSignInUtils;
 
-    @Autowired
-    private AppSignUpUtils appSignUpUtils;
+//    @Autowired
+//    private AppSignUpUtils appSignUpUtils;
 
     @Autowired
     private SecurityProperties securityProperties;
@@ -249,7 +248,7 @@ public class UserController {
         // 无论是注册还是绑定，都会拿到一个唯一标识
         String userId = user.getUsername();
         // 设置两种浏览器和App社交登录后注册的不同的处理类型
-        // providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
-        appSignUpUtils.doPostSignUp(new ServletWebRequest(request), userId);
+        providerSignInUtils.doPostSignUp(userId, new ServletWebRequest(request));
+        // appSignUpUtils.doPostSignUp(new ServletWebRequest(request), userId);
     }
 }
