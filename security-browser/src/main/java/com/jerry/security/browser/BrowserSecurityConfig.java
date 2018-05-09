@@ -1,6 +1,7 @@
 package com.jerry.security.browser;
 
 import com.jerry.security.core.authentication.AbstractChannelSecurityConfig;
+import com.jerry.security.core.authorize.AuthorizeConfigManager;
 import com.jerry.security.core.properties.SecurityConstants;
 import com.jerry.security.core.properties.SecurityProperties;
 import com.jerry.security.core.validate.code.ValidateCodeSecurityConfig;
@@ -69,6 +70,8 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
     @Autowired
     private LogoutSuccessHandler logoutSuccessHandler;
 
+    @Autowired
+    private AuthorizeConfigManager authorizeConfigManager;
 
     @Bean
     public PersistentTokenRepository persistentTokenRepository() {
@@ -131,28 +134,9 @@ public class BrowserSecurityConfig extends AbstractChannelSecurityConfig {
                 .deleteCookies("JSESSIONID")
 
                 .and()
-                // authorizeRequests后面跟的都是已授权地址
-                .authorizeRequests()
-                .antMatchers(
-                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
-                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
-                        securityProperties.getBrowser().getLoginPage(),
-                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-                        securityProperties.getBrowser().getSignUpUrl(),
-                        "/user/register",
-                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".json",
-                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html",
-                        securityProperties.getBrowser().getSignOutUrl()
-                ).permitAll()
-                // 对所有/user/*的get请求必须具有ROLE_ADMIN权限
-                .antMatchers(HttpMethod.GET,"/user/*").hasRole("ADMIN")
-                // 对其他所有请求
-                .anyRequest()
-                // 都需要授权
-                .authenticated()
-
-                .and()
                 // 关闭跨域防护伪造
                 .csrf().disable();
+
+        authorizeConfigManager.config(http.authorizeRequests());
     }
 }

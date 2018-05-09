@@ -2,6 +2,7 @@ package com.jerry.security.app;
 
 import com.jerry.security.app.social.openid.OpenIdAuthenticationSecurityConfig;
 import com.jerry.security.core.authentication.mobile.SmsCodeAuthenticationSecurityConfig;
+import com.jerry.security.core.authorize.AuthorizeConfigManager;
 import com.jerry.security.core.properties.SecurityConstants;
 import com.jerry.security.core.properties.SecurityProperties;
 import com.jerry.security.core.validate.code.ValidateCodeSecurityConfig;
@@ -46,6 +47,9 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     private OpenIdAuthenticationSecurityConfig openIdAuthenticationSecurityConfig;
 
+    @Autowired
+    private AuthorizeConfigManager authorizeConfigManager;
+
     @Override
     public void configure(HttpSecurity http) throws Exception {
         // 配置和用户名密码登录相关的配置
@@ -75,27 +79,9 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .apply(openIdAuthenticationSecurityConfig)
 
                 .and()
-                // authorizeRequests后面跟的都是已授权地址
-                .authorizeRequests()
-                .antMatchers(
-                        SecurityConstants.DEFAULT_UNAUTHENTICATION_URL,
-                        SecurityConstants.DEFAULT_LOGIN_PROCESSING_URL_MOBILE,
-                        securityProperties.getBrowser().getLoginPage(),
-                        SecurityConstants.DEFAULT_VALIDATE_CODE_URL_PREFIX + "/*",
-                        securityProperties.getBrowser().getSignUpUrl(),
-                        "/user/register",
-                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".json",
-                        securityProperties.getBrowser().getSession().getSessionInvalidUrl() + ".html",
-                        securityProperties.getBrowser().getSignOutUrl(),
-                        "/social/signUp"
-                ).permitAll()
-                // 对其他所有请求
-                .anyRequest()
-                // 都需要授权
-                .authenticated()
-
-                .and()
                 // 关闭跨域防护伪造
                 .csrf().disable();
+
+        authorizeConfigManager.config(http.authorizeRequests());
     }
 }

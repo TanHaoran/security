@@ -56,6 +56,6 @@ public class MyUserDetailsService implements UserDetailsService, SocialUserDetai
         // 这里对权限字符串定义要在配置文件中指定的角色前面加"ROLE_"
         return new SocialUser(username, password,
                 true, true, true, true,
-                AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_ADMIN,ROLE_USER"));
+                AuthorityUtils.commaSeparatedStringToAuthorityList("xxx"));
     }
 }

@@ -28,4 +28,5 @@
 ### 第7章 使用Spring Security控制授权
 #### 7-1 SpringSecurity授权简介
 #### 7-2 SpringSecurity源码解析
+#### 7-3 权限表达式
 
