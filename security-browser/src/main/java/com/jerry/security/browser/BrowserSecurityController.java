@@ -1,8 +1,8 @@
 package com.jerry.security.browser;
 
-import com.jerry.security.browser.support.SocialUserInfo;
 import com.jerry.security.core.properties.SecurityProperties;
 import com.jerry.security.core.support.SimpleResponse;
+import com.jerry.security.core.support.SocialUserInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

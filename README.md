@@ -27,4 +27,5 @@
 #### 6-11 基于JWT实现SSO单点登录2
 ### 第7章 使用Spring Security控制授权
 #### 7-1 SpringSecurity授权简介
+#### 7-2 SpringSecurity源码解析
 
