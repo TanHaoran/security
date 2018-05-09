@@ -1,6 +1,7 @@
 package com.jerry.security;
 
 import com.jerry.security.core.authorize.AuthorizeConfigProvider;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
@@ -13,10 +14,12 @@ import org.springframework.stereotype.Component;
  * Description:
  */
 @Component
+@Order(Integer.MAX_VALUE)
 public class DemoAuthorizeConfigProvider implements AuthorizeConfigProvider {
 
     @Override
     public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
-        config.antMatchers("/demo.html").hasRole("ADMIN");
+        // 任何请求都要走这个规则
+        config.anyRequest().access("@rbacService.hasPermission(request, authentication)");
     }
 }

@@ -14,6 +14,7 @@
         <module>security-browser</module>
         <module>security-app</module>
         <module>security-demo</module>
+        <module>security-authorize</module>
     </modules>
 
     <!--声明一个公共的版本变量-->

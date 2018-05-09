@@ -8,6 +8,7 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="security-app" />
+        <module name="security-authorize" />
         <module name="security-browser" />
         <module name="security-core" />
         <module name="security-demo" />

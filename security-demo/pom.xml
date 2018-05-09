@@ -13,15 +13,21 @@
 
     <dependencies>
         <dependency>
-        <groupId>com.jerry.security</groupId>
-        <artifactId>security-browser</artifactId>
-        <version>${security.version}</version>
+            <groupId>com.jerry.security</groupId>
+            <artifactId>security-browser</artifactId>
+            <version>${security.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jerry.security</groupId>
+            <artifactId>security-authorize</artifactId>
+            <version>${security.version}</version>
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>com.jerry.security</groupId>-->
-            <!--<artifactId>security-app</artifactId>-->
-            <!--<version>${security.version}</version>-->
+        <!--<groupId>com.jerry.security</groupId>-->
+        <!--<artifactId>security-app</artifactId>-->
+        <!--<version>${security.version}</version>-->
         <!--</dependency>-->
 
         <!--Spring测试框架-->

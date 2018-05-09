@@ -5,6 +5,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -17,8 +18,11 @@ import java.util.Set;
 @Component
 public class MyAuthorizeConfigManager implements AuthorizeConfigManager {
 
+    /**
+     * 因为是一个有序集合，所以这里要是用List
+     */
     @Autowired
-    private Set<AuthorizeConfigProvider> authorizeConfigProviderSet;
+    private List<AuthorizeConfigProvider> authorizeConfigProviderSet;
 
     @Override
     public void config(ExpressionUrlAuthorizationConfigurer<HttpSecurity>.ExpressionInterceptUrlRegistry config) {
@@ -26,6 +30,6 @@ public class MyAuthorizeConfigManager implements AuthorizeConfigManager {
         for (AuthorizeConfigProvider authorizeConfigProvider : authorizeConfigProviderSet) {
             authorizeConfigProvider.config(config);
         }
-        config.anyRequest().authenticated();
+        // config.anyRequest().authenticated();
     }
 }
